@@ -16,6 +16,8 @@
 #define EPS 1.2e-7
 #define RNMX (1.0-EPS)
 
+
+// Reference: https://www.cec.uchile.cl/cinetica/pcordero/MC_libros/NumericalRecipesinC.pdf (p. 282)
 float ran2(long *idum){
     int j;
     long k;
