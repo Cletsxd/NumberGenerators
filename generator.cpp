@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #define IM1 2147483563
 #define IM2 2147483399
@@ -79,17 +80,48 @@ float ran2(long *idum){
     }
 }
 
-int main(){
-    long number = - 235;
-    float rands[10];
-    printf("%f, %ld\n", ran2(&number), number);
+float halton_sequence(long index, long base){
+    float f = 1;
+    float r = 0, aux = 0;
 
-    for(int i = 0; i < 10; i++){
-        rands[i] = ran2(&number);
-        number = number - 1;
+    while(index > 0){
+        f = f / base;
+        r = r + f * (index % base);
+        aux = floor((index / base));
+        index = aux;
     }
 
-    for(int i = 0; i < 10; i++){
-        printf("%f, %ld\n", rands[i], number);
+    return r;
+}
+
+int main(){
+    long ncx = -235;
+    long nhx = -235, b = 7;
+
+    long ncy = -15900;
+    long nhy = -15900;
+
+    float cx, cy, hx, hy;
+
+    long nauxx = -235, nauxy = -15900;
+
+    FILE *file_pointer;
+    file_pointer = fopen("data.csv", "w");
+
+    for(int i = 0; i < 10000; i++){
+        cx = ran2(&ncx);
+        cy = ran2(&ncy);
+
+        hx = halton_sequence(-1 * nhx, b);
+        hy = halton_sequence(-1 * nhy, b);
+        
+        printf("CongX: %f, CongY: %f, HaltonX: %f, HaltonY: %f, X: %ld, Y: %ld\n", cx, cy, hx, hy, nauxx, nauxy);
+        fprintf(file_pointer, "%f, %f, %f, %f\n", cx, cy, hx, hy);
+
+        nauxy -= 1;
+        nauxx -= 1;
+
+        ncx = nhx = nauxx;
+        ncy = nhy = nauxy;
     }
 }
